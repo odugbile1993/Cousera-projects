@@ -210,9 +210,22 @@ def matrix(initial_number, end_of_first_row):
 #     print(count+1)
 
 
-for outer_loop in range(2, 6+1):
-    for inner_loop in range(outer_loop):
-        if inner_loop % 2 == 0:
-            print(inner_loop)
+# for outer_loop in range(2, 6+1):
+#     for inner_loop in range(outer_loop):
+#         if inner_loop % 2 == 0:
+#             print(inner_loop)
+
+print("Hello World!")
+
+name = "Manny"
+number = len(name) * 3
+print("Hello {}, your lucky number is {}".format(name, number))
+
+
+name = "Manny"
+print("Your lucky number is {number}, {name}.".format(name=name, number=len(name)*3))
+
+
+
 
 
