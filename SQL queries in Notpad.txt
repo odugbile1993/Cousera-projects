@@ -1,0 +1,130 @@
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS user_priority;
+DROP TABLE IF EXISTS total_outstanding_balance;
+DROP TABLE IF EXISTS payments;
+DROP TABLE IF EXISTS loans;
+
+-- Create the LOANS table
+CREATE TABLE loans (
+    loan_id INT PRIMARY KEY,
+    user_id INT,
+    total_amount_disbursed DECIMAL(10, 2),
+    disbursement_date DATE
+);
+
+-- Insert sample data into LOANS
+INSERT INTO loans (loan_id, user_id, total_amount_disbursed, disbursement_date) VALUES
+(1, 1, 5000, '2022-09-02'),
+(2, 2, 6000, '2022-09-02'),
+(3, 1, 1000, '2022-10-05'),
+(4, 3, 10000, '2022-09-02');
+
+-- Create the PAYMENTS table
+CREATE TABLE payments (
+    payment_id INT PRIMARY KEY,
+    loan_id INT,
+    amount DECIMAL(10, 2),
+    type VARCHAR(20),
+    payment_timestamp DATETIME,
+    FOREIGN KEY (loan_id) REFERENCES loans(loan_id)
+);
+
+-- Insert sample data into PAYMENTS
+INSERT INTO payments (payment_id, loan_id, amount, type, payment_timestamp) VALUES
+(1, 1, 5000, 'disbursement', '2022-10-01 05:01:12'),
+(2, 2, 100, 'repayment', '2022-10-01 05:05:12'),
+(3, 1, 1000, 'repayment', '2022-10-01 05:31:01'),
+(4, 2, 10, 'repayment', '2022-11-01 03:11:01');
+
+-- Create a date range table using a recursive CTE
+
+DROP TEMPORARY TABLE IF EXISTS date_range;
+CREATE TEMPORARY TABLE date_range AS
+WITH RECURSIVE date_range AS (
+    SELECT MIN(disbursement_date) AS date
+    FROM loans
+    UNION ALL
+    SELECT DATE_ADD(date, INTERVAL 1 DAY)
+    FROM date_range
+    WHERE date < CURDATE()
+)
+SELECT date FROM date_range;
+
+-- Create the total_outstanding_balance table
+CREATE TABLE total_outstanding_balance (
+    date DATE,
+    user_id INT,
+    loan_id INT,
+    total_amount_disbursed DECIMAL(10, 2),
+    total_outstanding_balance DECIMAL(10, 2),
+    latest_repayment_date DATE
+);
+
+-- Populate the total_outstanding_balance table
+INSERT INTO total_outstanding_balance (date, user_id, loan_id, total_amount_disbursed, total_outstanding_balance, latest_repayment_date)
+SELECT
+    dr.date,
+    l.user_id,
+    l.loan_id,
+    l.total_amount_disbursed,
+    l.total_amount_disbursed - IFNULL(totals.sum_amount, 0) AS total_outstanding_balance,
+    totals.latest_payment_date
+FROM date_range dr
+JOIN loans l ON dr.date BETWEEN l.disbursement_date AND DATE_ADD(l.disbursement_date, INTERVAL 60 DAY)
+LEFT JOIN (
+    SELECT
+        p.loan_id,
+        SUM(p.amount) AS sum_amount,
+        MAX(p.payment_timestamp) AS latest_payment_date
+    FROM payments p
+    WHERE p.type = 'repayment'
+    GROUP BY p.loan_id
+) totals ON l.loan_id = totals.loan_id
+ORDER BY dr.date, l.user_id, l.loan_id;
+
+
+
+
+-- Create the user_priority table
+CREATE TABLE user_priority (
+    user_id INT,
+    loan_id INT,
+    last_paid_before_n_days INT,
+    total_amount_disbursed DECIMAL(10, 2),
+    total_outstanding_amount DECIMAL(10, 2),
+    ranking INT
+);
+
+-- Set initial ranking variable
+SET @ranking := 0;
+
+-- Insert data into user_priority with ranking
+INSERT INTO user_priority (user_id, loan_id, last_paid_before_n_days, total_amount_disbursed, total_outstanding_amount, ranking)
+SELECT
+    user_id,
+    loan_id,
+    last_paid_before_n_days,
+    total_amount_disbursed,
+    total_outstanding_amount,
+    @ranking := @ranking + 1 AS ranking
+FROM (
+    SELECT
+        tb.user_id,
+        tb.loan_id,
+        DATEDIFF(CURDATE(), MAX(tb.date)) AS last_paid_before_n_days,
+        MAX(tb.total_amount_disbursed) AS total_amount_disbursed,
+        MAX(tb.total_outstanding_balance) AS total_outstanding_amount
+    FROM total_outstanding_balance tb
+    GROUP BY tb.user_id, tb.loan_id
+    HAVING (DATEDIFF(CURDATE(), MAX(tb.date)) > 30 AND MAX(tb.total_outstanding_balance) >= 0.70 * MAX(tb.total_amount_disbursed))
+       OR MAX(tb.total_outstanding_balance) >= 10000
+    ORDER BY total_outstanding_amount DESC
+    LIMIT 1000
+) AS ranked_users;
+
+Select * from user_priority;
+select * from total_outstanding_balance;
+Select * from loans;
+Select * from payments;
+
+
