@@ -452,6 +452,22 @@ print(convert_distance(5.5)) # Should be: 5.5 miles equals 8.8 km
 print(convert_distance(11))  # Should be: 11 miles equals 17.6 km
 
 
+# List
+
+x = ["Now", "we", "are", "cooking!"]
+type(x)
+print(x)
+["Now", "we", "are", "cooking!"]
+len(x)
+
+print(x[0])
+print(x[1])
+print(x[2])
+print(x[3])
+
+
+
+
 
 
 
