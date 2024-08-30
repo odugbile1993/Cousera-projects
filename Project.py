@@ -465,6 +465,171 @@ print(x[1])
 print(x[2])
 print(x[3])
 
+fruits = ["pineappple", "Banana", "Apple", "Melo"]
+fruits.append("kiwi")
+print(fruits)
+fruits.insert(0, "Orange")
+print(fruits)
+fruits.insert(25, "Peach")
+print(fruits)
+# to remove items from the list
+fruits.remove("Melo")
+print(fruits)
+
+# To add new list
+fruits[2] = "strawberry"
+print(fruits)
+fruits[5] = "juice"
+print(fruits)
+
+# tuple
+def convert_seconds (seconds):
+    hours = seconds // 3600
+    minutes = (seconds - hours * 3600) // 60
+    remaining_seconds = seconds - hours * 3600 - minutes * 60
+    return hours, minutes, remaining_seconds
+result = convert_seconds(5000)
+print(result)
+
+# iterating over lists and tuples
+animals = ["Lion", "Zebra", "Dolphin", "Monkey"]
+chars = 0
+for animal in animals:
+    chars += len(animal)
+    
+print("Total characters: {}, Average length: {}". format(chars, chars/len(animals)))
+
+winners = ["Ashley", "Dylan", "Reese"]
+for index,  person in enumerate(winners):
+    print("{} - {}". format(index + 1, person))
+
+def full_emails(people):
+    result = []
+    for email, name in people:  # Missing colon
+        result.append("{} <{}>".format(name, email))  # Improper space before the dot and formatting
+    return result
+print(full_emails([("drolalekan.ayodele@gmail.com", "Ayodele Odugbile"), ("udumary1993@gmail.com", "Olalekan Ayodele")]))
+
+# List comprehension
+multiples = []
+for x in range (1, 11):
+    multiples.append(x*7)
+    print(multiples)
+
+languages = ['python', 'perl', 'ruby', 'go', 'java', 'c']
+lengths = [len(language) for language in languages]
+print(lengths)
+
+z = [x for x in range (0, 101) if x % 3 ==0]
+print(x)
+
+# This block of code changes the year on a list of dates.
+# The "years" list is given with existing elements. 
+years = ["January 2023", "May 2025", "April 2023", "August 2024", "September 2025", "December 2023"]
+
+# The variable "updated_years" is initialized as a list data type 
+# using empty square brackets []. This list will hold the new list
+# with the updated years. 
+updated_years = []
+# The for loop checks each "year" element in the list "years".
+for year in years:
+    # The if-statement checks if the "year" element ends with the 
+    # substring "2023". 
+    if year.endswith("2023"):
+        # If True, then a temporary variable "new" will hold the 
+        # modified "year" element where the "2023" substring is 
+        # replaced with the substring "2024".
+        new = year.replace("2023","2024")
+        # Then, the list "updated_years" is appended with the changed
+        # element held in the temporary variable "new".
+        updated_years.append(new)
+    # If False, the original "year" element will be appended to the 
+    # the "updated_years" list unchanged.
+    else:
+        updated_years.append(year)
+        print(updated_years) 
+     # Should print ["January 2024", "May 2025", "April 2024", "August 2024", "September 2025", "December 2024"]
+     
+     # This list comprehension creates a list of squared numbers (n*n). It
+    # accepts two integer variables through the function’s parameters.
+    
+def squares(start, end):
+    # The list comprehension calculates the square of a variable integer 
+    # "n", where "n" ranges from the "start" to "end" variables inclusively.
+    # To be inclusive in a range(), add +1 to the end of range variable.
+    return [n*n for n in range(start,end+1)] 
+
+print(squares(2, 3))  # Should print [4, 9]
+print(squares(1, 5))  # Should print [1, 4, 9, 16, 25]
+print(squares(0, 10)) # Should print [0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+# This block of code also changes the year on a list of dates using a
+# different approach than demonstrated in Skill Group 1. By using a 
+# list comprehension, you can see how it is possible to refactor the
+# code to a shorter, more efficient code block. 
+
+# The "years" list is given with existing elements.
+years = ["January 2023", "May 2025", "April 2023", "August 2024", "September 2025", "December 2023"]
+
+# The list comprehension below creates a new list "updated_years" to
+# hold the command to replace the "2023" substring of the "year"
+# element with the substring "2024". This action will be executed if
+# the last 4 indices of the "year" string is equal to the substring
+# "2023". If false (else), the "year" element will be included in the
+# new list "updated_years" unchanged.
+updated_years = [year.replace("2023","2024") if year[-4:] == "2023" else year for year in years]
+
+print(updated_years) 
+# Should print ["January 2024", "May 2025", "April 2024", "August 2024", "September 2025", "December 2024"]
+
+# This function splits a given string into a list of elements. Then, it
+# modifies each element by moving the first character to the end of the 
+# element and adds a dash between the element and the moved character. 
+# For example, the element "2two" will be changed to "two-2". Finally,
+# the function converts the list back to a string, and returns the
+# new string.
+def change_string(given_string):
+
+    # Initialize "new_string" as a string data type by using empty quotes.`
+    new_string = ""
+
+    # Split the "given_string" into a "new_list", with each "element"
+    # holding an individual word from the string.
+    new_list = given_string.split()
+
+    # The for loop iterates over each "element" in the "new_list".
+    for element in new_list:
+        # Convert the list into a "new_string" by using the assignment
+        # operator += to concatenate the following items: 
+        # + Each list "element" (starting at index position [1:]), 
+        # + a dash "-", 
+        # + append the first character of the "element" (using the index 
+        # [0]) to the end of the "element", and finally,
+        # + a space " " to separate each "element" in the "new_string".
+        new_string += element[1:] + "-" + element[0] + " "
+
+    # Return the list that has been converted back into a string.
+    return new_string
+
+print(change_string("1one 2two 3three 4four 5five")) # Should print "one-1 two-2 three-3 four-4 five-5"  
+ 
+ 
+     
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
