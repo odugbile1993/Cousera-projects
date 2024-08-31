@@ -1,3 +1,7 @@
+# Project Description:
+# Develop a system to process a list of Event objects, which capture user login and logout activities across various machines.
+# The system should sort these events by date, track user sessions, and generate a report listing all users currently logged in to each machine.
+
 def get_event_date(event):
     return event.date
 
@@ -20,7 +24,7 @@ def generate_report(machines):
             print("{}: {}".format(machine, user_list))
 
 class Event:
-    def __init__(self, event_date, event_type, machine_name, user):  
+    def __init__(self, event_date, event_type, machine_name, user):  # Use __init__ instead of _int_
         self.date = event_date
         self.type = event_type
         self.machine = machine_name
