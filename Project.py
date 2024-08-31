@@ -650,6 +650,15 @@ def count_letters(text):
         count_letters("a long string with a lot of letters")
         
 
+# Define the dictionary first
+myDictionary = {'apple': 3, 'orange': 5, 'banana': 7}
+
+key = 'banana'
+if key in myDictionary:
+    print(f"The value of {key} is {myDictionary[key]}")
+else:
+    print(f"{key} is not found in the dictionary")
+
 
 
 
