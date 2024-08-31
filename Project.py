@@ -614,7 +614,45 @@ def change_string(given_string):
 print(change_string("1one 2two 3three 4four 5five")) # Should print "one-1 two-2 three-3 four-4 five-5"  
  
  
-     
+# Dictionary 
+file_counts = {"jpg":10, "txt":14, "csv":2, "py":23}
+print(file_counts)
+
+# updating and deleting file in dic 
+del file_counts["jpg"]
+print(file_counts)
+
+file_counts ["txt"] = 100
+print(file_counts)
+
+# iterating over the content dictionary
+
+file_count = {"jpg":10, "txt":14, "csv":2, "py":2}
+for extension in file_count:
+    print(extension)
+    
+    
+file_count = {"jpg":10, "txt":14, "csv":2, "py":2}   
+for ext, amount in file_count.items():
+ print("There are {} files with the . {} extension". format(amount, ext))
+for value in file_count.values():
+    print(value)
+    
+def count_letters(text):
+    result = {}
+    for letter in text:
+        if letter not in result:
+            result[letter] = 0
+            result[letter] +=1
+            return result
+        count_letters("aaaaa")
+        count_letters("tenant")
+        count_letters("a long string with a lot of letters")
+        
+
+
+
+
 
 
   
